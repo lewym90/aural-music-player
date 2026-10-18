@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0c0c0e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Aural">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <title>Aural</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M9 18V5l12-2v13"/>
+          <circle cx="6" cy="18" r="3"/>
+          <circle cx="18" cy="16" r="3"/>
+        </svg>
+        <span>Aural</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon" data-import="folder" aria-label="Importuj folder" title="Importuj folder">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+        </button>
+        <button class="btn-primary" data-import="files">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span id="importLabel">Importuj</span>
+        </button>
+      </div>
+      <input type="file" id="fileInput" accept="audio/*,.flac,.m4a,.mp3,.wav,.aac,.ogg,.opus" multiple hidden>
+      <input type="file" id="folderInput" webkitdirectory multiple hidden>
+    </header>
+
+    <div class="search-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="search" id="search" placeholder="Szukaj utworów..." autocomplete="off">
+    </div>
+
+    <main class="library" id="library">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M9 18V5l12-2v13"/>
+            <circle cx="6" cy="18" r="3"/>
+            <circle cx="18" cy="16" r="3"/>
+          </svg>
+        </div>
+        <h2>Twoja biblioteka jest pusta</h2>
+        <p>Zaimportuj pliki lub folder z muzyką z telefonu, aby rozpocząć słuchanie w najwyższej jakości.</p>
+        <button class="btn-primary large" data-import="files">Wybierz pliki</button>
+        <button class="btn-secondary" data-import="folder">Wybierz folder</button>
+      </div>
+      <ul class="track-list" id="trackList"></ul>
+      <p class="no-results" id="noResults" hidden>Brak wyników</p>
+    </main>
+
+    <div class="player" id="player" hidden>
+      <div class="now-playing">
+        <div class="artwork">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 18V5l12-2v13"/>
+            <circle cx="6" cy="18" r="3"/>
+            <circle cx="18" cy="16" r="3"/>
+          </svg>
+        </div>
+        <div class="meta">
+          <div class="title" id="currentTitle">—</div>
+          <div class="artist" id="currentArtist">Aural</div>
+        </div>
+      </div>
+
+      <div class="progress-container">
+        <span class="time" id="currentTime">0:00</span>
+        <input type="range" id="progress" min="0" max="1000" step="1" value="0" aria-label="Postęp" class="progress">
+        <span class="time" id="duration">0:00</span>
+      </div>
+
+      <div class="controls">
+        <button id="prevBtn" class="control-btn" aria-label="Poprzedni">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+          </svg>
+        </button>
+        <button id="playBtn" class="control-btn play" aria-label="Odtwarzaj">
+          <svg class="play-icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <svg class="pause-icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+          </svg>
+        </button>
+        <button id="nextBtn" class="control-btn" aria-label="Następny">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <audio id="audio" preload="metadata" playsinline></audio>
+  <script src="js/app.js"></script>
+</body>
+</html>
