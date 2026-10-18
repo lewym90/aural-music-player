@@ -1,4 +1,4 @@
-const CACHE_NAME = 'aural-v2';
+const CACHE_NAME = 'aural-v3';
 const ASSETS = [
   './',
   './index.html',

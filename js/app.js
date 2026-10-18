@@ -18,6 +18,8 @@ class AuralPlayer {
     this.playToken = 0;
     this.currentUrl = null;
     this.toastTimer = null;
+    this.sortMode = 'date';
+    try { this.sortMode = localStorage.getItem('aural.sort') === 'name' ? 'name' : 'date'; } catch (e) { /* ignore */ }
 
     this.init();
   }
@@ -76,7 +78,11 @@ class AuralPlayer {
   }
 
   sortTracks() {
-    this.tracks.sort((a, b) => a.name.localeCompare(b.name, 'pl', { numeric: true }));
+    const byName = (a, b) => a.name.localeCompare(b.name, 'pl', { numeric: true });
+    // "date" = newest file first (file's own modification date, i.e. when it landed on the phone)
+    const stamp = (t) => t.modified || t.added || 0;
+    if (this.sortMode === 'name') this.tracks.sort(byName);
+    else this.tracks.sort((a, b) => (stamp(b) - stamp(a)) || ((b.added || 0) - (a.added || 0)) || byName(a, b));
   }
 
   loadTracks() {
@@ -103,6 +109,7 @@ class AuralPlayer {
       name: file.name,
       type: this.guessType(file),
       size: file.size,
+      modified: file.lastModified || Date.now(),
       added: Date.now()
     };
     await new Promise((resolve, reject) => {
@@ -240,6 +247,16 @@ class AuralPlayer {
         this.audio.currentTime = (e.target.value / 1000) * this.audio.duration;
       }
       this.seeking = false;
+    });
+
+    const sortSel = document.getElementById('sortSelect');
+    sortSel.value = this.sortMode;
+    sortSel.addEventListener('change', (e) => {
+      this.sortMode = e.target.value === 'name' ? 'name' : 'date';
+      try { localStorage.setItem('aural.sort', this.sortMode); } catch (err) { /* ignore */ }
+      this.sortTracks();
+      if (this.currentId !== null) this.currentIndex = this.tracks.findIndex(t => t.id === this.currentId);
+      this.render();
     });
 
     document.getElementById('search').addEventListener('input', (e) => {
