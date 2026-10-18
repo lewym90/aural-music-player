@@ -1,9 +1,10 @@
-const CACHE_NAME = 'aural-v3';
+const CACHE_NAME = 'aural-v4';
 const ASSETS = [
   './',
   './index.html',
   './css/style.css',
   './js/app.js',
+  './js/tags.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
